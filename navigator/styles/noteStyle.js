@@ -24,7 +24,7 @@ const noteStyle = StyleSheet.create({
     fontSize: 17,
     borderRadius: 15,
     backgroundColor: "#fff",
-    width: "80%",
+    width: "75%",
     borderWidth: 1,
     borderColor: "#000",
   },

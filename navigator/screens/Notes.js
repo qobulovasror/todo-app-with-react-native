@@ -29,7 +29,12 @@ const Notes = () => {
     },
   ]);
   const [updateWin, setUpdateWin] = useState(false);
-
+  const [filter, setFilter] = useState('');
+  const [filterType, setFilterType] = useState('title');
+  
+  const filterHandler = () => {
+    setFilterType((filterType==='title')? 'text': 'title')
+  }
   const fetchNote = async () => {
     getNote()
       .then((data) => {
@@ -42,6 +47,14 @@ const Notes = () => {
   useEffect(() => {
     fetchNote();
   }, []);
+  const filteredNote = []
+  notes.forEach(item=>{
+    const searchTxt = (filterType==='title')? item.name: item.main;
+    if(searchTxt.toLowerCase().indexOf(filter.toLowerCase())===-1){
+      return;
+    }
+    filteredNote.push(item)
+  })
   return (
     <SafeAreaView style={noteStyle.container}>
       {updateWin && (
@@ -59,13 +72,20 @@ const Notes = () => {
           justifyContent: "space-around",
         }}
       >
-        <TextInput style={noteStyle.input} placeholder="&#128269; Search..." />
-        <TouchableOpacity style={noteStyle.searchBtn}>
-          <Ionicons name="search" size={20} color={"#fff"} />
+        <TouchableOpacity style={[noteStyle.searchBtn, defaultStyle.row]} onPress={filterHandler}>
+          <Text style={{fontSize: 17, color: '#fff'}}>{filterType}</Text>
+          <Ionicons name="swap-horizontal" style={{marginTop: 2, marginStart: 2}} size={20} color={'#fff'}/>
         </TouchableOpacity>
+        <TextInput 
+          style={noteStyle.input} 
+          placeholder="&#128269; Search..." 
+          value={filter}
+          onChangeText={setFilter}
+        />
+        
       </View>
       <FlatList
-        data={notes}
+        data={filteredNote}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={noteStyle.item}
